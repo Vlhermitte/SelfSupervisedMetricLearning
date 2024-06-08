@@ -38,8 +38,15 @@ def mine_hard_negatives(model, batch):
     # Combine original and augmented batches
     combined_batch = torch.cat([batch, augmented_batch], dim=0)
 
-    # Forward pass to get embeddings
-    embeddings = model(combined_batch)  # Assuming model outputs embeddings directly
+    # Set the model to evaluation mode
+    model.eval()
+    # Disable gradient calculation for inference
+    with torch.no_grad():
+        # Forward pass to get embeddings
+        embeddings = model(combined_batch)
+
+    # Return the model to training mode
+    model.train()
     batch_size = embeddings.size(0) // 2  # Since combined_batch contains both original and augmented images
 
     anchors = embeddings[:batch_size]
