@@ -14,7 +14,7 @@ def data_augmentation(img):
         transforms.RandomHorizontalFlip(),
         transforms.RandomRotation(10),
         transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
-        transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),
+        transforms.RandomResizedCrop(224, scale=(0.8, 1.0), antialias=True),
     ])
     if img.device.type == 'mps': # mps not supported. See https://github.com/pytorch/pytorch/issues/77764
         augmented_img = transform(img.cpu()).to(img.device)
