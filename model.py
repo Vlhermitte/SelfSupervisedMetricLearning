@@ -26,39 +26,28 @@ class BloodNet(nn.Module):
         return "BloodNet"
 
 
-class SiameseNetwork(nn.Module):
+class BloodSimNet(nn.Module):
     """
-    Siamese network for self-supervised learning
+    A network that maps an image to an embedding (descriptor) with global pooling and a projection layer
     """
-
-    def __init__(self):
-        super(SiameseNetwork, self).__init__()
-        self.cnn = nn.Sequential(
-            nn.Conv2d(3, 64, 3),
+    def __init__(self, projection_dim=64, use_max=True):
+        super(BloodSimNet, self).__init__()
+        self.resnet = resnet18(weights=ResNet18_Weights.DEFAULT)
+        self.resnet = nn.Sequential(*list(self.resnet.children())[:-2])
+        self.pool = nn.AdaptiveMaxPool2d(1) if use_max else nn.AdaptiveAvgPool2d(1)
+        self.projector = nn.Sequential(
+            nn.Linear(512, 512),
             nn.ReLU(),
-            nn.MaxPool2d(2),
-            nn.Conv2d(64, 128, 3),
-            nn.ReLU(),
-            nn.MaxPool2d(2),
-            nn.Conv2d(128, 256, 3),
-            nn.ReLU(),
-            nn.MaxPool2d(2),
-            nn.Conv2d(256, 512, 3),
-            nn.ReLU(),
-            nn.MaxPool2d(2)
+            nn.Linear(512, projection_dim),
         )
 
-        self.fc = nn.Sequential(
-            nn.Linear(512 * 6 * 6, 1024),
-            nn.ReLU(),
-            nn.Linear(1024, 512)
-        )
-
-    def forward(self, x):
-        x = self.cnn(x)
-        x = x.view(x.size(0), -1)
-        x = self.fc(x)
-        return x
+    def forward(self, x, eps=1e-6):
+        z = self.resnet(x)
+        z = self.pool(z)
+        z = z.view(z.size(0), -1)
+        z = self.projector(z)
+        z = F.normalize(z, p=2, dim=1, eps=eps)
+        return z
 
     def __str__(self):
-        return "SiameseNetwork"
+        return "BloodSimNet"
