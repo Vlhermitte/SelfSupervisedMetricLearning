@@ -45,7 +45,6 @@ Where:
 - `sim(z_i, z_j)` is the cosine similarity between the feature representations
 - `N` is the number of images in the batch
 - `\tau` is a temperature parameter that scales the similarity scores
-- 
 
 The goal of the model is to learn a feature representation of the images such that the similarity between positive pairs is maximized, while the similarity between negative pairs is minimized.
 
