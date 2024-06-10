@@ -38,14 +38,13 @@ It is important to note that since we are in self-supervised learning, we may ge
 ## Contrastive Loss Approach
 
 ```math
-L(z_i, z_j) = -log \frac{exp(sim(z_i, z_j) / \tau)}{{\sum_{k=1}^{2N} \mathbf{1}_{[k \neq i]} exp(sim(z_i, z_k) / \tau)}
+L(z_i, z_j) = -log \frac{exp(sim(z_i, z_j) / t)}{{\sum_{k=1, [k \neq i]}^{2N}  exp(sim(z_i, z_k) / t)}
 ```
 Where:
 - `z_i` and `z_j` are the feature representations of the images
 - `sim(z_i, z_j)` is the cosine similarity between the feature representations
 - `N` is the number of images in the batch
-- `\mathbf{1}_{[k \neq i]}` is an indicator function that is 1 if `k` is not equal to `i`, and 0 otherwise
-- `\tau` is a temperature parameter that scales the similarity scores
+- `t` is a temperature parameter that scales the similarity scores
 
 The goal of the model is to learn a feature representation of the images such that the similarity between positive pairs is maximized, while the similarity between negative pairs is minimized.
 
