@@ -1,16 +1,18 @@
-# Self-Supervised Learning with Triplet Loss for Blood Cell Images
+# Self-Supervised Metric Learning for Blood Cell Images
 
-This repository is an attempt to implement a self-supervised learning model for blood cell images using triplet loss. 
+This repository is an attempt to implement a self-supervised learning model for blood cell images using with 2 approches:
+- Triplet Loss
+- Contrastive Loss
 
 The model is trained on the [Blood Cell Images dataset](https://www.kaggle.com/paultimothymooney/blood-cells) from Kaggle. 
 The dataset contains 12,500 images of blood cells, which are classified into 4 categories: eosinophil, lymphocyte, monocyte, and neutrophil.
 
 However, since we want to train the model in a self-supervised manner, we will not use the labels provided in the dataset. 
-Instead, we will use the triplet loss function to learn the features of the images.
+Instead, we will use the triplet loss or contrastive loss to learn a feature representation of the images.
 
-The Triple Loss function is defined as follows:
+## Triple Loss Approach
 
-```
+```math
 L(A, P, N) = max(0, d(A, P) - d(A, N) + margin)
 ```
 
@@ -27,11 +29,31 @@ The goal of the model is to learn a feature representation of the images such th
 The negatives are found using batch hard negative mining, which selects the hardest negative for each anchor image.
 This done by finding the negative image that is closest to the anchor image in terms of distance in the batch.
 
-I decided to use batch hard negative mining because it is computationally efficient then mining negatives from the entire dataset.
+I decided to use batch hard negative mining because it is more computationally efficient then mining negatives from the entire dataset.
 
-## Improvements
+### Improvements
 It is important to note that since we are in self-supervised learning, we may get some false negatives.
-Another approach could be to use the Teacher-Student method, but I would need to do more research on that.
+
+
+## Contrastive Loss Approach
+
+```math
+L(z_i, z_j) = -log(exp(sim(z_i, z_j) / \tau) / \sum_{k=1}^{2N} exp(sim(z_i, z_k) / \tau))
+```
+
+Where:
+- `z_i` and `z_j` are the feature representations of the images
+- `sim(z_i, z_j)` is the cosine similarity between the feature representations
+- `exp` is the exponential function
+- `log` is the natural logarithm
+- `\tau` is a temperature parameter that scales the similarity scores
+
+The goal of the model is to learn a feature representation of the images such that the similarity between positive pairs is maximized, while the similarity between negative pairs is minimized.
+
+## References
+
+- [Triplet Loss](https://arxiv.org/abs/1503.03832)
+- [Contrastive Loss](https://arxiv.org/abs/2002.05709)
 
 ---
 
