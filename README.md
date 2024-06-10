@@ -38,7 +38,7 @@ It is important to note that since we are in self-supervised learning, we may ge
 ## Contrastive Loss Approach
 
 ```math
-L(z_i, z_j) = -log \left( \frac{exp(sim(z_i, z_j) / t)}{exp(sim(z_i, z_j) / t) + \sum_{k=1, [k \neq i]}^{2N} exp(sim(z_i, z_k) / t)} \right)
+L(z_i, z_j) = -log(exp(sim(z_i, z_j) / t) / sum(exp(sim(z_i, z_k) / t))
 ```
 Where:
 - `z_i` and `z_j` are the feature representations of the images
